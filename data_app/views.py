@@ -13,24 +13,32 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = BASE_DIR / '.env'
 load_dotenv(env_path)
 
-# Initialize Supabase client only if variables exist AND not on Render
-supabase = None
-if 'RENDER' not in os.environ:  # Only enable Supabase locally, not on deployment
-    supabase_url = os.getenv('SUPABASE_URL')
-    supabase_key = os.getenv('SUPABASE_ANON_KEY')
+# Check if we're on Render deployment
+IS_RENDER = 'RENDER' in os.environ
 
-    if supabase_url and supabase_key:
-        try:
-            from supabase import create_client, Client
-            supabase: Client = create_client(supabase_url, supabase_key)
+# Initialize Supabase client ONLY if not on Render
+supabase = None
+supabase_connected = False
+
+if not IS_RENDER:
+    # Only attempt to import and use Supabase locally
+    try:
+        from supabase import create_client, Client
+        supabase_url = os.getenv('SUPABASE_URL')
+        supabase_key = os.getenv('SUPABASE_ANON_KEY')
+        
+        if supabase_url and supabase_key:
+            supabase = create_client(supabase_url, supabase_key)
+            supabase_connected = True
             print("✅ Supabase client initialized successfully")
-        except Exception as e:
-            print(f"❌ Supabase initialization error: {e}")
-            supabase = None
-    else:
-        print("⚠️ Supabase credentials not found - running in local mode only")
+        else:
+            print("⚠️ Supabase credentials not found")
+    except ImportError:
+        print("⚠️ Supabase package not available")
+    except Exception as e:
+        print(f"❌ Supabase initialization error: {e}")
 else:
-    print("🚀 Running on Render - Supabase disabled for deployment stability")
+    print("🚀 Running on Render - Supabase disabled")
 
 def home(request):
     form = DataEntryForm()
@@ -43,7 +51,7 @@ def home(request):
         'form': form,
         'entries': entries,
         'metabase_url': metabase_dashboard_url,
-        'supabase_connected': supabase is not None and 'RENDER' not in os.environ  # False on deployment
+        'supabase_connected': supabase_connected and not IS_RENDER
     })
 
 @csrf_exempt
@@ -54,8 +62,8 @@ def add_entry(request):
             # Save to Django database
             entry = form.save()
             
-            # Also sync to Supabase if connected (and not on Render)
-            if supabase and 'RENDER' not in os.environ:
+            # Only sync to Supabase if running locally and connected
+            if supabase_connected and not IS_RENDER and supabase:
                 sync_to_supabase(entry)
             
             return redirect('home')
@@ -63,9 +71,9 @@ def add_entry(request):
     return redirect('home')
 
 def sync_to_supabase(entry):
-    """Sync data to Supabase"""
-    try:
-        if supabase and 'RENDER' not in os.environ:  # Only sync locally
+    """Sync data to Supabase (local development only)"""
+    if not IS_RENDER and supabase:
+        try:
             data = {
                 'name': entry.name,
                 'email': entry.email,
@@ -79,11 +87,10 @@ def sync_to_supabase(entry):
             response = supabase.table('data_entries').insert(data).execute()
             print("✅ Data synced to Supabase")
             return response
-    except Exception as e:
-        print(f"❌ Error syncing to Supabase: {e}")
+        except Exception as e:
+            print(f"❌ Error syncing to Supabase: {e}")
 
 def get_metabase_dashboard_url():
     """Generate Metabase dashboard embed URL"""
-    # For deployment, return empty string to show setup guide
-    # This prevents errors since Metabase runs locally
+    # Return empty string to show setup guide on deployment
     return ""
