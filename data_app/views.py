@@ -13,22 +13,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = BASE_DIR / '.env'
 load_dotenv(env_path)
 
-# Initialize Supabase client only if variables exist
-supabase_url = os.getenv('SUPABASE_URL')
-supabase_key = os.getenv('SUPABASE_ANON_KEY')
-
-# Initialize supabase client safely
+# Initialize Supabase client only if variables exist AND not on Render
 supabase = None
-if supabase_url and supabase_key:
-    try:
-        from supabase import create_client, Client
-        supabase: Client = create_client(supabase_url, supabase_key)
-        print("✅ Supabase client initialized successfully")
-    except Exception as e:
-        print(f"❌ Supabase initialization error: {e}")
-        supabase = None
+if 'RENDER' not in os.environ:  # Only enable Supabase locally, not on deployment
+    supabase_url = os.getenv('SUPABASE_URL')
+    supabase_key = os.getenv('SUPABASE_ANON_KEY')
+
+    if supabase_url and supabase_key:
+        try:
+            from supabase import create_client, Client
+            supabase: Client = create_client(supabase_url, supabase_key)
+            print("✅ Supabase client initialized successfully")
+        except Exception as e:
+            print(f"❌ Supabase initialization error: {e}")
+            supabase = None
+    else:
+        print("⚠️ Supabase credentials not found - running in local mode only")
 else:
-    print("⚠️ Supabase credentials not found - running in local mode only")
+    print("🚀 Running on Render - Supabase disabled for deployment stability")
 
 def home(request):
     form = DataEntryForm()
@@ -41,7 +43,7 @@ def home(request):
         'form': form,
         'entries': entries,
         'metabase_url': metabase_dashboard_url,
-        'supabase_connected': supabase is not None  # Pass connection status to template
+        'supabase_connected': supabase is not None and 'RENDER' not in os.environ  # False on deployment
     })
 
 @csrf_exempt
@@ -52,8 +54,8 @@ def add_entry(request):
             # Save to Django database
             entry = form.save()
             
-            # Also sync to Supabase if connected
-            if supabase:
+            # Also sync to Supabase if connected (and not on Render)
+            if supabase and 'RENDER' not in os.environ:
                 sync_to_supabase(entry)
             
             return redirect('home')
@@ -63,7 +65,7 @@ def add_entry(request):
 def sync_to_supabase(entry):
     """Sync data to Supabase"""
     try:
-        if supabase:  # Check if supabase is initialized
+        if supabase and 'RENDER' not in os.environ:  # Only sync locally
             data = {
                 'name': entry.name,
                 'email': entry.email,
