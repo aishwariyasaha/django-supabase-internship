@@ -1,17 +1,21 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
-# Load .env file from project root (where manage.py is)
-BASE_DIR = Path(__file__).resolve().parent.parent
-env_path = BASE_DIR / '.env'
-load_dotenv(env_path)
+# Only load .env if not on Render deployment
+if 'RENDER' not in os.environ:
+    from dotenv import load_dotenv
+    # Load .env file from project root (where manage.py is)
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    env_path = BASE_DIR / '.env'
+    load_dotenv(env_path)
+    print("DEBUG: Loading .env from:", env_path)
+    print("DEBUG: SUPABASE_URL:", os.getenv('SUPABASE_URL'))
+    print("DEBUG: SUPABASE_DB_HOST:", os.getenv('SUPABASE_DB_HOST'))
+else:
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    print("DEBUG: Running on Render - .env loading skipped")
 
-# Debug: Check if env vars are loading
-print("DEBUG: Loading .env from:", env_path)
-print("DEBUG: SUPABASE_URL:", os.getenv('SUPABASE_URL'))
-print("DEBUG: SUPABASE_DB_HOST:", os.getenv('SUPABASE_DB_HOST'))
-
+# Use environment variables or defaults
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-dev')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
