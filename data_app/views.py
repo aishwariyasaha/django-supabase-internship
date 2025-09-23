@@ -82,4 +82,6 @@ def sync_to_supabase(entry):
 
 def get_metabase_dashboard_url():
     """Generate Metabase dashboard embed URL"""
-    return "http://localhost:3000/public/dashboard/17625129-d251-4733-8e9d-1ae91b574d63"
+    # For deployment, return empty string to show setup guide
+    # This prevents errors since Metabase runs locally
+    return ""
