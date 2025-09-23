@@ -1,25 +1,12 @@
 import os
 from pathlib import Path
 
-# Only load .env if not on Render deployment
-if 'RENDER' not in os.environ:
-    from dotenv import load_dotenv
-    # Load .env file from project root (where manage.py is)
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    env_path = BASE_DIR / '.env'
-    load_dotenv(env_path)
-    print("DEBUG: Loading .env from:", env_path)
-    print("DEBUG: SUPABASE_URL:", os.getenv('SUPABASE_URL'))
-    print("DEBUG: SUPABASE_DB_HOST:", os.getenv('SUPABASE_DB_HOST'))
-else:
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    print("DEBUG: Running on Render - .env loading skipped")
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Use environment variables or defaults
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-dev')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-
-ALLOWED_HOSTS = ['*']
+# Hardcoded values for deployment stability
+SECRET_KEY = 'django-insecure-deployment-key-1234567890'
+DEBUG = False
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -64,29 +51,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database Configuration - SQLite for deployment, PostgreSQL for local
-if 'RENDER' in os.environ:
-    # Use SQLite on Render (for deployment)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+# Always use SQLite for simplicity
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-    print("DEBUG: Using SQLite database for deployment")
-else:
-    # Use PostgreSQL locally (for development with Supabase)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('SUPABASE_DB_NAME'),
-            'USER': os.getenv('SUPABASE_DB_USER'),
-            'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD'),
-            'HOST': os.getenv('SUPABASE_DB_HOST'),
-            'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
-        }
-    }
-    print("DEBUG: Using PostgreSQL database for local development")
+}
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
