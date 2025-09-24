@@ -52,6 +52,9 @@ def home(request):
             min_salary = 0
             avg_age = 0
         
+        # Metabase Public Dashboard URL
+        metabase_url = "http://localhost:3000/public/dashboard/17625129-d251-4733-8e9d-1ae91b574d63"
+        
         # Test database connection
         supabase_connected = False
         try:
@@ -72,7 +75,8 @@ def home(request):
             'max_salary': max_salary,
             'min_salary': min_salary,
             'avg_age': avg_age,
-            'supabase_connected': supabase_connected
+            'supabase_connected': supabase_connected,
+            'metabase_url': metabase_url  # Added Metabase URL
         })
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}")
