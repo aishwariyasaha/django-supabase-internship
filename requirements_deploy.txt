@@ -1,6 +1,0 @@
-Django==5.0.6
-supabase==1.0.3  # Use older, more stable version
-django-crispy-forms==2.1
-gunicorn==21.2.0
-python-dotenv==1.0.0
-requests==2.31.0
