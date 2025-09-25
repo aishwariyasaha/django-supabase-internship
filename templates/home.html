@@ -103,20 +103,6 @@
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
     
-    .employee-table {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
-    
-    .table th {
-      background: linear-gradient(135deg, #2c3e50, #34495e);
-      color: white;
-      border: none;
-      font-weight: 600;
-    }
-    
     .department-badge {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
@@ -172,6 +158,26 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .btn-metabase {
+      background: linear-gradient(135deg, #509bf5, #1d4ed8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 15px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-metabase:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(80, 155, 245, 0.4);
+      color: white;
+    }
+    
+    .dashboard-section {
+      margin-bottom: 2rem;
     }
   </style>
 </head>
@@ -280,90 +286,63 @@
           </div>
         </div>
 
-        <!-- Employee Table -->
-        <div class="row">
+        <!-- Metabase Dashboard Section -->
+        <div class="row mt-5">
           <div class="col-12">
-            <div class="employee-table">
-              <div class="p-3" style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white;">
-                <h5 class="mb-0">
-                  <i class="fas fa-list me-2"></i>Team Members
-                  <span class="badge bg-light text-dark ms-2">{{ total_employees }}</span>
-                </h5>
+            <div class="metabase-container text-center p-5">
+              <i class="fas fa-chart-line fa-4x text-primary mb-4"></i>
+              <h3 class="fw-bold mb-3">Advanced Analytics Dashboard</h3>
+              <p class="text-muted lead mb-4">
+                Access comprehensive business intelligence with our integrated Metabase analytics platform
+              </p>
+              
+              <!-- Metabase Dashboard Button -->
+              <a href="http://localhost:3000" 
+                 target="_blank" 
+                 class="btn btn-metabase btn-lg mb-3">
+                <i class="fas fa-external-link-alt me-2"></i>
+                Open Full Analytics Dashboard
+              </a>
+              
+              <div class="row mt-4">
+                <div class="col-md-3">
+                  <div class="feature-card">
+                    <i class="fas fa-chart-bar fa-2x text-info mb-3"></i>
+                    <h6>Interactive Charts</h6>
+                    <p class="text-muted small">Real-time data visualization</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="feature-card">
+                    <i class="fas fa-filter fa-2x text-success mb-3"></i>
+                    <h6>Advanced Filtering</h6>
+                    <p class="text-muted small">Custom data queries</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="feature-card">
+                    <i class="fas fa-download fa-2x text-warning mb-3"></i>
+                    <h6>Export Data</h6>
+                    <p class="text-muted small">CSV, PDF exports</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="feature-card">
+                    <i class="fas fa-bolt fa-2x text-danger mb-3"></i>
+                    <h6>Live Updates</h6>
+                    <p class="text-muted small">Real-time analytics</p>
+                  </div>
+                </div>
               </div>
-              <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Role</th>
-                      <th>Age</th>
-                      <th>Salary</th>
-                      <th>Join Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for entry in entries %}
-                    <tr>
-                      <td class="fw-bold">{{ entry.name }}</td>
-                      <td><span class="department-badge">{{ entry.department }}</span></td>
-                      <td>{{ entry.age }}</td>
-                      <td class="fw-bold text-success">₹{{ entry.salary }}</td>
-                      <td><small class="text-muted">{{ entry.date_created|date:"M d, Y" }}</small></td>
-                      <td><span class="badge bg-success">Active</span></td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+              
+              <div class="alert alert-success mt-4">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Metabase Integration Active</strong> - Advanced analytics platform connected and ready
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Metabase Integration Status -->
-        <div class="row mt-4">
-          <div class="col-12">
-            <div class="metabase-container">
-              <div class="p-4 text-center">
-                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
-                <h4>Advanced Analytics Integration</h4>
-                <p class="text-muted">Metabase business intelligence platform integrated for advanced data analytics</p>
-                
-                <div class="alert alert-success">
-                  <i class="fas fa-check-circle me-2"></i>
-                  <strong>Metabase Analytics Platform Integrated</strong><br>
-                  <small>Advanced business intelligence with comprehensive dashboard capabilities</small>
-                </div>
-                
-                <div class="row mt-3">
-                  <div class="col-md-4">
-                    <i class="fas fa-database fa-2x text-info mb-2"></i>
-                    <h6>Real-time Analytics</h6>
-                    <p class="text-muted small">Live data visualization</p>
-                  </div>
-                  <div class="col-md-4">
-                    <i class="fas fa-brain fa-2x text-success mb-2"></i>
-                    <h6>AI-Powered Insights</h6>
-                    <p class="text-muted small">Predictive analytics</p>
-                  </div>
-                  <div class="col-md-4">
-                    <i class="fas fa-rocket fa-2x text-warning mb-2"></i>
-                    <h6>Enterprise Ready</h6>
-                    <p class="text-muted small">Business intelligence</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Status Indicator -->
-            <div class="alert alert-success text-center mt-3">
-              <i class="fas fa-check-circle me-2"></i>
-              <strong>Metabase Integration Active</strong> - Advanced analytics dashboard configured and operational
-            </div>
-          </div>
-        </div>
-
-        <!-- Department Progress -->
+  <!-- Department Progress -->
         {% if department_counts %}
         <div class="row mt-4">
           <div class="col-12">
@@ -383,8 +362,7 @@
             </div>
           </div>
         </div>
-        {% endif %}
-
+          {% endif %}
         <!-- Footer -->
         <div class="text-center mt-5 py-4" style="border-top: 1px solid rgba(0,0,0,0.1);">
           <p class="text-muted mb-0">
@@ -397,76 +375,119 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Process REAL data
+      // Process REAL data for charts
       function processRealData() {
         const salaries = [];
         const departments = [];
         const departmentCounts = {};
         
-        const tableRows = document.querySelectorAll('table tbody tr');
+        // Since we removed the table, we'll use the data from Django context
+        // You can pass this data from your views or use a different approach
+        const employeeData = [
+          {% for entry in entries %}
+          {
+            salary: {{ entry.salary }},
+            department: "{{ entry.department }}"
+          },
+          {% endfor %}
+        ];
         
-        tableRows.forEach(row => {
-          const cells = row.querySelectorAll('td');
-          const salary = parseFloat(cells[3].textContent.replace('₹', '').replace(',', ''));
-          const department = cells[1].textContent.trim();
+        employeeData.forEach(entry => {
+          salaries.push(entry.salary);
           
-          salaries.push(salary);
-          
-          if (departmentCounts[department]) {
-            departmentCounts[department]++;
+          if (departmentCounts[entry.department]) {
+            departmentCounts[entry.department]++;
           } else {
-            departmentCounts[department] = 1;
-            departments.push(department);
+            departmentCounts[entry.department] = 1;
+            departments.push(entry.department);
           }
         });
         
         return { salaries, departments, departmentCounts };
       }
       
+      // Initialize charts
       const realData = processRealData();
       
-      // Salary ranges from REAL data
-      const salaryRanges = [0, 0, 0, 0];
-      realData.salaries.forEach(salary => {
-        if (salary < 30000) salaryRanges[0]++;
-        else if (salary < 50000) salaryRanges[1]++;
-        else if (salary < 70000) salaryRanges[2]++;
-        else salaryRanges[3]++;
-      });
-      
-      // Charts with REAL data
-      new Chart(document.getElementById('salaryChart'), {
-        type: 'bar',
-        data: {
-          labels: ['< ₹30K', '₹30-50K', '₹50-70K', '₹70K+'],
-          datasets: [{
-            data: salaryRanges,
-            backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
+      if (realData.salaries.length > 0) {
+        const salaryRanges = [0, 0, 0, 0];
+        realData.salaries.forEach(salary => {
+          if (salary < 30000) salaryRanges[0]++;
+          else if (salary < 50000) salaryRanges[1]++;
+          else if (salary < 70000) salaryRanges[2]++;
+          else salaryRanges[3]++;
+        });
+        
+        // Salary Distribution Chart
+        new Chart(document.getElementById('salaryChart'), {
+          type: 'bar',
+          data: {
+            labels: ['< ₹30K', '₹30-50K', '₹50-70K', '₹70K+'],
+            datasets: [{
+              data: salaryRanges,
+              backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { 
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Salary Distribution'
+              }
+            },
+            scales: { 
+              y: { 
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Number of Employees'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Salary Ranges'
+                }
+              }
+            }
+          }
+        });
 
-      const deptData = realData.departments.map(dept => realData.departmentCounts[dept]);
-      new Chart(document.getElementById('departmentChart'), {
-        type: 'doughnut',
-        data: {
-          labels: realData.departments,
-          datasets: [{
-            data: deptData,
-            backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom' } }
-        }
-      });
+        // Department Distribution Chart
+        const deptData = realData.departments.map(dept => realData.departmentCounts[dept]);
+        new Chart(document.getElementById('departmentChart'), {
+          type: 'doughnut',
+          data: {
+            labels: realData.departments,
+            datasets: [{
+              data: deptData,
+              backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { 
+              legend: { 
+                position: 'bottom',
+                labels: {
+                  padding: 20
+                }
+              },
+              title: {
+                display: true,
+                text: 'Team Structure by Department'
+              }
+            }
+          }
+        });
+      } else {
+        // Show placeholder charts if no data
+        document.getElementById('salaryChart').innerHTML = '<p class="text-muted">No data available</p>';
+        document.getElementById('departmentChart').innerHTML = '<p class="text-muted">No data available</p>';
+      }
     });
   </script>
 </body>
