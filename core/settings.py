@@ -3,13 +3,19 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Environment variables with fallbacks
+# ---------------------------
+# Basic settings
+# ---------------------------
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-deployment-key-1234567890')
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-# Allow all hosts for Railway deployment
-ALLOWED_HOSTS = ['*']  # Will be restricted in production
+# Allow localhost and ngrok domain for mobile testing
+NGROK_DOMAIN = os.environ.get('NGROK_DOMAIN', 'bert-condign-nonlyrically.ngrok-free.dev')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', NGROK_DOMAIN]
 
+# ---------------------------
+# Installed apps
+# ---------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -23,9 +29,12 @@ INSTALLED_APPS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+# ---------------------------
+# Middleware
+# ---------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ADDED for Railway
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -36,6 +45,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
+# ---------------------------
+# Templates
+# ---------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -54,62 +66,49 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database Configuration for Railway + Supabase
-if 'DATABASE_URL' in os.environ:
-    # Railway PostgreSQL (if you want to use Railway's DB instead of Supabase)
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+# ---------------------------
+# Database (Supabase)
+# ---------------------------
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('SUPABASE_DB_NAME', 'postgres'),
+        'USER': os.environ.get('SUPABASE_DB_USER', 'postgres.bjhuhlgzpabbxscktvbz'),
+        'PASSWORD': os.environ.get('SUPABASE_DB_PASSWORD', 'Taehyung13@'),
+        'HOST': os.environ.get('SUPABASE_DB_HOST', 'aws-1-ap-southeast-1.pooler.supabase.com'),
+        'PORT': os.environ.get('SUPABASE_DB_PORT', '6543'),
     }
-else:
-    # Supabase PostgreSQL (your current setup)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('SUPABASE_DB_NAME', 'postgres'),
-            'USER': os.environ.get('SUPABASE_DB_USER', 'postgres.bjhuhlgzpabbxscktvbz'),
-            'PASSWORD': os.environ.get('SUPABASE_DB_PASSWORD', 'Taehyung13@'),
-            'HOST': os.environ.get('SUPABASE_DB_HOST', 'aws-1-ap-southeast-1.pooler.supabase.com'),
-            'PORT': os.environ.get('SUPABASE_DB_PORT', '6543'),
-        }
-    }
+}
 
+# ---------------------------
 # Password validation
+# ---------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
+# ---------------------------
 # Internationalization
+# ---------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ---------------------------
+# Static files
+# ---------------------------
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Security settings for production
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    ALLOWED_HOSTS = ['.railway.app', 'localhost', '127.0.0.1']
-    CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
+# ---------------------------
+# CSRF trusted origins for ngrok
+# ---------------------------
+CSRF_TRUSTED_ORIGINS = [f'https://{NGROK_DOMAIN}']
