@@ -29,6 +29,7 @@ A full-stack web application for employee data management with real-time analyti
 
 ### Installation
 1. **Clone or download the project**
-2. **Install dependencies**
+2. C:\Users\your_user-name\django-supabase-app
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
