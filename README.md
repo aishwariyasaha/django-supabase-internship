@@ -3,7 +3,6 @@
 ##  Live Demo
 **Live Application URL:** `https://bert-condign-nonlyrically.ngrok-free.dev`
 
-*(Replace the above URL with your actual Ngrok URL when you run it)*
 
 ## Project Overview
 A full-stack web application for employee data management with real-time analytics and business intelligence integration.
